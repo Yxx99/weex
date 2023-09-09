@@ -16,6 +16,26 @@ const routes: Array<RouteRecordRaw> = [
         path: '/account/',
         name: 'Account',
         component: () => import('@/views/myAccount/Index.vue'),
+    },
+    {
+        path: '/order/',
+        name: 'Order',
+        component: () => import('@/views/order/Index.vue'),
+    },
+    {
+        path: '/aiQuantify/',
+        name: 'AiQuantify',
+        component: () => import('@/views/aiQuantify/Index.vue'),
+    },
+    {
+        path: '/aiQuantifyInfo/',
+        name: 'AiQuantifyInfo',
+        component: () => import('@/views/aiQuantifyInfo/Index.vue'),
+    },
+    {
+        path: '/deal/',
+        name: 'Deal',
+        component: () => import('@/views/deal/Index.vue'),
     }
 ]
 

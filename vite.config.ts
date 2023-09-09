@@ -23,10 +23,10 @@ export default defineConfig({
     'process.env': {}
   },
   server: {
-    host: 'cb.sword.cn',
+    host: '127.0.0.1',
     port: 3000,
     strictPort: false,
-    https: {
+    http: {
         key: fs.readFileSync('./src/certs/cb.sword.cn-key.pem'),
         cert: fs.readFileSync('./src/certs/cb.sword.cn.pem'),
     },

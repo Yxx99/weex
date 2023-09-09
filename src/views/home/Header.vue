@@ -33,7 +33,7 @@
         </div>
     </div>
 </template>
-    
+
 <script setup lang='ts'>
 import pic1 from '@/assets/banner/1.jpeg'
 import pic2 from '@/assets/banner/2.jpeg'
@@ -56,8 +56,8 @@ const imgs = [pic1, pic2, pic3]
 // 快捷入口
 const quickEntry = ref([
     {name: i18n.global.t("quickEntry.account"), icon: accountIcon, path: '/account'},
-    {name: i18n.global.t("quickEntry.trade"), icon: tradeIcon, path: '/account'},
-    {name: i18n.global.t("quickEntry.ai"), icon: aiIcon, path: '/account'},
+    {name: i18n.global.t("quickEntry.trade"), icon: tradeIcon, path: '/deal'},
+    {name: i18n.global.t("quickEntry.ai"), icon: aiIcon, path: '/aiQuantifyInfo'},
     {name: i18n.global.t("quickEntry.nft"), icon: nftIcon, path: '/account'},
     {name: i18n.global.t("quickEntry.welfare"), icon: welfareIcon, path: '/account'},
     {name: i18n.global.t("quickEntry.simulate"), icon: demoTradeIcon, path: '/account'},
@@ -66,7 +66,7 @@ const quickEntry = ref([
 ])
 
 </script>
-    
+
 <style lang="scss" scoped>
  .my-swipe .van-swipe-item {
     color: #fff;
@@ -120,7 +120,7 @@ const quickEntry = ref([
             align-items: center;
             gap: 7px;
             padding-top: 0;
-            
+
             .item-icon {
                 width: 32px;
                 height: 32px;

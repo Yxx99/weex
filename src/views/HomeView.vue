@@ -21,12 +21,12 @@ const ws = new WebSocket('wss://api.ezixkbgn.top/wss')
 provide('ws', ws)
 
 onMounted(() => {
-    getAccountAndBalance().then((res) => {
-        store.setAccount(res.account)
-        store.setEthBalance(res.eth_balance)
-        store.setUSDTBalance(res.usdt_balance)
-        userInfo(res).then(() => {})
-    })
+    // getAccountAndBalance().then((res) => {
+    //     store.setAccount(res.account)
+    //     store.setEthBalance(res.eth_balance)
+    //     store.setUSDTBalance(res.usdt_balance)
+    //     userInfo(res).then(() => {})
+    // })
 })
 
 onUnmounted(() => {
@@ -37,7 +37,7 @@ onUnmounted(() => {
 
 
 </script>
-    
+
 <style>
-    
+
 </style>
