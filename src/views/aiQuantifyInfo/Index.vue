@@ -32,37 +32,40 @@
         </div>
     </div>
     <div class="list">
-        <div class="list-item">
+        <div class="list-item"  v-for="(item,index) in listData"  :key="`item${index}`">
             <div class="header">
-                <div class="title">{{ info.title }}</div>
+                <div class="title">{{ item.name }}</div>
             </div>
             <div class="body">
                 <div class="item">
                     <div class="title">限额(USDT)</div>
-                    <div class="value">{{ info.money }} - {{ info.money }}</div>
+                    <div class="value">{{ item.min }} - {{ item.max }}</div>
                 </div>
                 <div class="item">
                     <div class="title">每日收益</div>
-                    <div class="value">{{ info.rate }}</div>
+                    <div class="value">{{ item.everyday_in }}</div>
                 </div>
                 <div class="item">
                     <div class="title">周期</div>
-                    <div class="value">{{ info.day }}天</div>
+                    <div class="value">{{ item.duration }}天</div>
                 </div>
             </div>
             <div class="footer">
                 <div class="logoList">
                   <img  v-for="(item,index) in logoIcon" :key="index"  :src="item">
                 </div>
-                <div class="button" @click="btn">托管</div>
             </div>
+           <div class="button" @click="btn(item)">托管</div>
         </div>
     </div>
 </template>
 
 <script setup lang='ts'>
-import { reactive, ref } from 'vue'
+import { reactive, ref ,onMounted} from 'vue'
 import { useRouter } from 'vue-router'
+import { showNotify } from 'vant';
+import { calcSub } from "@/utils/utils"
+import http from "@/utils/api";
 
 const Router = useRouter()
 const logoIcon = ref([
@@ -83,18 +86,56 @@ const info = ref({
     day: 3,
     date: '2023-08-29 23:16:51'
 })
+const listData = ref(<any>[])
 
 const backEven = () => {
-    Router.back()
+  Router.back()
 }
+
+//总共套利
+const paramsGetodds = {
+  account: "0x005c0d3905d26ccde047d8c1dd9603a8a205e929"
+}
+const getQuantifitionList = async()=>{
+  const data = await http.post('/quantifition/profit', { account:paramsGetodds.account })
+  info.value['money'] =  data
+}
+
+//产品列表
+const getQuantifitionOrder = async()=>{
+  const data = await http.post('/quantifition/list',{ account:paramsGetodds.account })
+  console.log('data',data)
+  listData.value = data
+}
+
+
+
+onMounted(() => {
+  getQuantifitionList()
+  getQuantifitionOrder()
+})
+
+
+
 
 const seeOrder =()=>{
   Router.push({ path: "/order" })
 }
 
-const btn = (num) => {
+const btn = (item) => {
   console.log('dfwer')
-  Router.push({path: "/aiQuantify"})
+  Router.push({
+    path: '/aiQuantify',
+    query: {
+      id:item.id,
+      amount:item.amount,
+      name:item.name,
+      min:item.min,
+      max:item.max,
+      duration:item.duration,
+      everydayIn:item.everyday_in
+    }
+  })
 }
 </script>
 
@@ -186,17 +227,17 @@ const btn = (num) => {
                 margin-right: 10px;
             }
         }
-        .button{
-            background: #29A1B2;
-            border-radius: 6px;
-            margin-top: 16px;
-            color: #fff;
-            text-align: center;
-            line-height: 40px;
-            font-size: 18px;
-        }
-    }
 
+    }
+  .button{
+    background: #29A1B2;
+    border-radius: 6px;
+    margin-top: 16px;
+    color: #fff;
+    text-align: center;
+    line-height: 40px;
+    font-size: 18px;
+  }
 }
 .logoList {
   display: flex;

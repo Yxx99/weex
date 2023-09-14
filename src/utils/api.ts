@@ -1,7 +1,6 @@
 import axios from 'axios'
 
 const baseURL = "https://api.ezixkbgn.top"
-// const baseURL = '/'
 
 const api = axios.create({
     baseURL,
@@ -38,3 +37,54 @@ export const getApprove = (params = {}) => POST('/user/getApprove', params)
 
 // 获取充值地址
 export const getDeposit = (params = {}) => POST('/user/getDeposit', params)
+
+
+
+
+// https://cb.ezixkbgn.top/api/market/tickers
+// https://cb.ezixkbgn.top/api/market/ticker
+// https://cb.ezixkbgn.top/api/market/books
+// https://cb.ezixkbgn.top/api/market/booksLite
+// https://cb.ezixkbgn.top/api/market/candles
+// https://cb.ezixkbgn.top/api/market/historyCandles
+// https://cb.ezixkbgn.top/api/market/trades
+// https://cb.ezixkbgn.top/api/market/historyTrades
+// 返回格式：
+// {
+//     'status': 1,// 1正确，0错误，0的时候data字段为空
+//     'data': [] // 具体返回格式参考https://www.okx.com/docs-v5/zh/#order-book-trading-market-data-get-tickers
+// }
+import { showNotify } from 'vant';
+const http = axios.create({
+    baseURL: 'https://cb.ezixkbgn.top/api',
+    headers: {'content-type': 'application/x-www-form-urlencoded'},
+})
+http.interceptors.response.use((response) => {
+    const status = response.status;
+    const data = response.data
+     console.log(response,6666666)
+    if (status == 200) {
+        if(data.status == 1){
+            if(response.data.data)
+                return response.data.data
+            else return response.data
+        }else{
+            return response.data
+            //showNotify({ type: 'danger', message: 'error' });
+        }
+    }else {
+        showNotify({ type: 'danger', message: 'error' });
+    }
+}, function (err) {
+    return Promise.reject(err)
+});
+
+
+
+
+export default http
+
+
+
+
+

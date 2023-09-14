@@ -5,22 +5,22 @@
       </template>
     </van-nav-bar>
     <div class="list">
-       <div class="list-item" v-for="item in list" :key="item.id">
+       <div class="list-item" >
          <div class="header">
-           <div class="title">{{ item.title }}</div>
+           <div class="title">{{ Route.query.name }}</div>
          </div>
          <div class="body">
            <div class="item">
              <div class="title">限额(USDT)</div>
-             <div class="value">{{ item.money }} - {{ item.money }}</div>
+             <div class="value">{{ Route.query.min }} - {{ Route.query.max}}</div>
            </div>
            <div class="item">
              <div class="title">每日收益</div>
-             <div class="value">{{ item.rate }}</div>
+             <div class="value">{{ Route.query.everydayIn}}</div>
            </div>
            <div class="item">
              <div class="title">周期</div>
-             <div class="value">{{ item.day }}天</div>
+             <div class="value">{{  Route.query.duration }}天</div>
            </div>
          </div>
          <div class="footer">
@@ -34,7 +34,7 @@
         <van-cell-group inset  >
           <van-field
               class="inputClass"
-              v-model="value1"
+              v-model="amount"
               label="USDT"
               left-icon="src/assets/products/Tether.png"
               right-text="全部"
@@ -49,8 +49,8 @@
             </template>
           </van-field>
         </van-cell-group>
-        <div class="moneyText">可用金额:206,1770 USDT </div>
-        <van-button block class="btnClass" @click="btn">立即托管</van-button>
+        <div class="moneyText">可用金额:{{moneyLost}}</div>
+        <van-button block class="btnClass" @click="getQuantifitionOrder()">立即托管</van-button>
         <div class="Instructions">
           <span><van-icon name="success" />每日收益将发送到您的USDT钱包</span>
           <span><van-icon name="success" />您的托管资金零风险</span>
@@ -63,9 +63,15 @@
 
 <script setup lang='ts'>
 import { reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute,useRouter } from 'vue-router'
+import {showNotify, showToast} from 'vant';
+import http from "@/utils/api";
 
+const Route = useRoute()
 const Router = useRouter()
+const list = ref()
+const amount = ref()
+
 const tabCur = ref(0)
 const logoIcon = ref([
   'src/assets/products/money.png',
@@ -73,37 +79,55 @@ const logoIcon = ref([
   'src/assets/products/Tether.png',
   'src/assets/products/eth.png'
 ])
-const statusJson = {
-    1: '待开始',
-    2: '进行中',
-    3: '已结束',
-}
-const list = ref(<any>[])
 const total = ref(0)
 const params = reactive({
     page: 1,
     size: 5
 })
-const getList = () => {
-    total.value = 1
-    list.value = [{
-        id: 1,
-        title: 'quantification',
-        status: 1,
-        money: 500,
-        rate: '3%',
-        day: 3,
-        date: '2023-08-29 23:16:51'
-    }]
-}
-getList();
 
-const back = () => {
-    Router.back()
-}
 const backEven = () => {
   Router.back()
 }
+//拖管下单
+const paramsGetodds = {
+  account: "0x005c0d3905d26ccde047d8c1dd9603a8a205e929"
+}
+const getQuantifitionOrder = async()=>{
+   const data = await http.post('/quantifition/order',{
+     account:paramsGetodds.account,
+     id: Route.query.id,
+     amount: amount.value,
+   })
+  switch(data.status){
+    case 1:
+      showToast('下单成功');
+      break;
+    case 0:
+      showToast('商品不存在');
+      break;
+    case -1:
+      showToast('商品已下架');
+      break;
+    case -2:
+      showToast('金额超出范围');
+      break;
+    case -3:
+      showToast('余额不足');
+      break;
+    case -4:
+      showToast('服务器原因导致下单失败');
+      break;
+    default:
+      showToast('下单失败');
+      break;
+  }
+  if(data.status == 1){
+    Router.push({ path: "/order" })
+  }
+
+}
+const moneyLost = localStorage.getItem('money');
+console.log("localStorage.getItem('key');",localStorage.getItem('money'))
 </script>
 
 <style lang="scss" scoped>
